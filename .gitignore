@@ -5,3 +5,5 @@ docx
 .history
 .DS_Store
 .vscode
+build
+

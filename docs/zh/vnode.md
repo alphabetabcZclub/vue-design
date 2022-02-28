@@ -8,15 +8,15 @@
 
 ```js
 const elementVNode = {
-  tag: 'div',
-  data: {
-    style: {
-      width: '100px',
-      height: '100px',
-      backgroundColor: 'red'
-    }
-  }
-}
+    tag: 'div',
+    data: {
+        style: {
+            width: '100px',
+            height: '100px',
+            backgroundColor: 'red',
+        },
+    },
+};
 ```
 
 我们使用 `tag` 属性来存储标签的名字，用 `data` 属性来存储该标签的附加信息，比如 `style`、`class`、事件等，通常我们把一个 `VNode` 对象的 `data` 属性称为 `VNodeData`。
@@ -25,42 +25,42 @@ const elementVNode = {
 
 ```js {4-7}
 const elementVNode = {
-  tag: 'div',
-  data: null,
-  children: {
-    tag: 'span',
-    data: null
-  }
-}
+    tag: 'div',
+    data: null,
+    children: {
+        tag: 'span',
+        data: null,
+    },
+};
 ```
 
 若有多个子节点，则可以把 `children` 属性设计为一个数组：
 
 ```js {4-13}
 const elementVNode = {
-  tag: 'div',
-  data: null,
-  children: [
-    {
-      tag: 'h1',
-      data: null
-    },
-    {
-      tag: 'p',
-      data: null
-    }
-  ]
-}
+    tag: 'div',
+    data: null,
+    children: [
+        {
+            tag: 'h1',
+            data: null,
+        },
+        {
+            tag: 'p',
+            data: null,
+        },
+    ],
+};
 ```
 
 除了标签元素之外，DOM 中还有文本节点，我们可以用如下 `VNode` 对象来描述一个文本节点：
 
 ```js
 const textVNode = {
-  tag: null,
-  data: null,
-  children: '文本内容'
-}
+    tag: null,
+    data: null,
+    children: '文本内容',
+};
 ```
 
 如上，由于文本节点没有标签名字，所以它的 `tag` 属性值为 `null`。由于文本节点也无需用额外的 `VNodeData` 来描述附加属性，所以其 `data` 属性值也是 `null`。
@@ -69,11 +69,11 @@ const textVNode = {
 
 ```js
 const textVNode = {
-  tag: null,
-  data: null,
-  children: null,
-  text: '文本内容'
-}
+    tag: null,
+    data: null,
+    children: null,
+    text: '文本内容',
+};
 ```
 
 这完全没有问题，这取决于你如何设计，但是**尽可能的在保证语义能够说得通的情况下复用属性，会使 `VNode` 对象更加轻量**，所以我们采取使用 `children` 属性来存储文本内容的方案。
@@ -82,14 +82,14 @@ const textVNode = {
 
 ```js
 const elementVNode = {
-  tag: 'div',
-  data: null,
-  children: {
-    tag: null,
+    tag: 'div',
     data: null,
-    children: '文本内容'
-  }
-}
+    children: {
+        tag: null,
+        data: null,
+        children: '文本内容',
+    },
+};
 ```
 
 ## 用 VNode 描述抽象内容
@@ -98,7 +98,7 @@ const elementVNode = {
 
 ```html
 <div>
-  <MyComponent />
+    <MyComponent />
 </div>
 ```
 
@@ -110,13 +110,13 @@ const elementVNode = {
 
 ```js {5}
 const elementVNode = {
-  tag: 'div',
-  data: null,
-  children: {
-    tag: MyComponent,
-    data: null
-  }
-}
+    tag: 'div',
+    data: null,
+    children: {
+        tag: MyComponent,
+        data: null,
+    },
+};
 ```
 
 如上，用来描述组件的 `VNode` 其 `tag` 属性值引用的就是组件类(或函数)本身，而不是标签名称字符串。所以理论上：**我们可以通过检查 `tag` 属性值是否是字符串来确定一个 `VNode` 是否是普通标签**。
@@ -127,11 +127,11 @@ const elementVNode = {
 
 ```html {4}
 <template>
-  <table>
-    <tr>
-      <Columns />
-    </tr>
-  </table>
+    <table>
+        <tr>
+            <Columns />
+        </tr>
+    </table>
 </template>
 ```
 
@@ -139,9 +139,9 @@ const elementVNode = {
 
 ```html
 <template>
-  <td></td>
-  <td></td>
-  <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
 </template>
 ```
 
@@ -149,34 +149,34 @@ const elementVNode = {
 
 ```js
 const elementVNode = {
-  tag: 'td',
-  data: null
-}
+    tag: 'td',
+    data: null,
+};
 ```
 
 但是模板中不仅仅只有一个 `td` 标签，而是有多个 `td` 标签，即多个根元素，这如何表示？此时我们就需要引入一个抽象元素，也就是我们要介绍的 `Fragment`。
 
 ```js {1,3-4}
-const Fragment = Symbol()
+const Fragment = Symbol();
 const fragmentVNode = {
-  // tag 属性值是一个唯一标识
-  tag: Fragment,
-  data: null,
-  children: [
-    {
-      tag: 'td',
-      data: null
-    },
-    {
-      tag: 'td',
-      data: null
-    },
-    {
-      tag: 'td',
-      data: null
-    }
-  ]
-}
+    // tag 属性值是一个唯一标识
+    tag: Fragment,
+    data: null,
+    children: [
+        {
+            tag: 'td',
+            data: null,
+        },
+        {
+            tag: 'td',
+            data: null,
+        },
+        {
+            tag: 'td',
+            data: null,
+        },
+    ],
+};
 ```
 
 如上，我们把所有 `td` 标签都作为 `fragmentVNode` 的子节点，根元素并不是一个实实在在的真实 DOM，而是一个抽象的标识，即 `Fragment`。
@@ -193,9 +193,9 @@ const fragmentVNode = {
 
 ```html
 <template>
-  <div id="box" style="z-index: -1;">
-    <Overlay />
-  </div>
+    <div id="box" style="z-index: -1;">
+        <Overlay />
+    </div>
 </template>
 ```
 
@@ -207,28 +207,28 @@ const fragmentVNode = {
 
 ```html {2,4}
 <template>
-  <Portal target="#app-root">
-    <div class="overlay"></div>
-  </Portal>
+    <Portal target="#app-root">
+        <div class="overlay"></div>
+    </Portal>
 </template>
 ```
 
 其最终效果是，无论你在何处使用 `<Overlay/>` 组件，它都会把内容渲染到 `id="app-root"` 的元素下。由此可知，所谓 `Portal` 就是把子节点渲染到给定的目标，我们可以使用如下 `VNode` 对象来描述上面这段模板：
 
 ```js {1,3}
-const Portal = Symbol()
+const Portal = Symbol();
 const portalVNode = {
-  tag: Portal,
-  data: {
-    target: '#app-root'
-  },
-  children: {
-    tag: 'div',
+    tag: Portal,
     data: {
-      class: 'overlay'
-    }
-  }
-}
+        target: '#app-root',
+    },
+    children: {
+        tag: 'div',
+        data: {
+            class: 'overlay',
+        },
+    },
+};
 ```
 
 `Portal` 类型的 `VNode` 与 `Fragment` 类型的 `VNode` 类似，都需要一个唯一的标识，来区分其类型，目的是告诉渲染器如何渲染该 `VNode`。
@@ -241,7 +241,7 @@ const portalVNode = {
 
 总的来说，我们可以把 `VNode` 分成五类，分别是：**`html/svg` 元素**、**组件**、**纯文本**、**Fragment** 以及 **Portal**：
 
-![vnode types](@imgs/vnode-types.png)
+![vnode types](../.vitepress/assets/imgs/vnode-types.png)
 
 如上图所示，我们可以把组件细分为 **有状态组件** 和 **函数式组件**。同时有状态组件还可以细分为三部分：**普通的有状态组件**、**需要被 keepAlive 的有状态组件** 以及 **已经被 keepAlive 的有状态组件** 。
 
@@ -253,10 +253,10 @@ const portalVNode = {
 
 比如在 `Vue2` 中区分 `VNode` 是 `html` 元素还是组件亦或是普通文本，是这样做的：
 
-- 1、拿到 `VNode` 后先尝试把它当作组件去处理，如果成功地创建了组件，那说明该 `VNode` 就是组件的 `VNode`
-- 2、如果没能成功地创建组件，则检查 `vnode.tag` 是否有定义，如果有定义则当作普通标签处理
-- 3、如果 `vnode.tag` 没有定义则检查是否是注释节点
-- 4、如果不是注释节点，则会把它当作文本节点对待
+-   1、拿到 `VNode` 后先尝试把它当作组件去处理，如果成功地创建了组件，那说明该 `VNode` 就是组件的 `VNode`
+-   2、如果没能成功地创建组件，则检查 `vnode.tag` 是否有定义，如果有定义则当作普通标签处理
+-   3、如果 `vnode.tag` 没有定义则检查是否是注释节点
+-   4、如果不是注释节点，则会把它当作文本节点对待
 
 以上这些判断都是在挂载(或`patch`)阶段进行的，换句话说，一个 `VNode` 到底描述的是什么是在挂载或 `patch` 的时候才知道的。这就带来了两个难题：**无法从 `AOT` 的层面优化**、**开发者无法手动优化**。
 
@@ -264,14 +264,14 @@ const portalVNode = {
 
 ```js
 if (flags & VNodeFlags.ELEMENT) {
-  // VNode 是普通标签
-  mountElement(/* ... */)
+    // VNode 是普通标签
+    mountElement(/* ... */);
 } else if (flags & VNodeFlags.COMPONENT) {
-  // VNode 是组件
-  mountComponent(/* ... */)
+    // VNode 是组件
+    mountComponent(/* ... */);
 } else if (flags & VNodeFlags.TEXT) {
-  // VNode 是纯文本
-  mountText(/* ... */)
+    // VNode 是纯文本
+    mountText(/* ... */);
 }
 ```
 
@@ -296,45 +296,43 @@ if (flags & VNodeFlags.ELEMENT) {
 
 ```js
 const VNodeFlags = {
-  // html 标签
-  ELEMENT_HTML: 1,
-  // SVG 标签
-  ELEMENT_SVG: 1 << 1,
+    // html 标签
+    ELEMENT_HTML: 1,
+    // SVG 标签
+    ELEMENT_SVG: 1 << 1,
 
-  // 普通有状态组件
-  COMPONENT_STATEFUL_NORMAL: 1 << 2,
-  // 需要被keepAlive的有状态组件
-  COMPONENT_STATEFUL_SHOULD_KEEP_ALIVE: 1 << 3,
-  // 已经被keepAlive的有状态组件
-  COMPONENT_STATEFUL_KEPT_ALIVE: 1 << 4,
-  // 函数式组件
-  COMPONENT_FUNCTIONAL: 1 << 5,
+    // 普通有状态组件
+    COMPONENT_STATEFUL_NORMAL: 1 << 2,
+    // 需要被keepAlive的有状态组件
+    COMPONENT_STATEFUL_SHOULD_KEEP_ALIVE: 1 << 3,
+    // 已经被keepAlive的有状态组件
+    COMPONENT_STATEFUL_KEPT_ALIVE: 1 << 4,
+    // 函数式组件
+    COMPONENT_FUNCTIONAL: 1 << 5,
 
-  // 纯文本
-  TEXT: 1 << 6,
-  // Fragment
-  FRAGMENT: 1 << 7,
-  // Portal
-  PORTAL: 1 << 8
-}
+    // 纯文本
+    TEXT: 1 << 6,
+    // Fragment
+    FRAGMENT: 1 << 7,
+    // Portal
+    PORTAL: 1 << 8,
+};
 ```
 
 如上这些枚举属性所代表的意义能够与下面的图片一一对应上：
 
-![vnode types](@imgs/vnode-types.png)
+![vnode types](../.vitepress/assets/imgs/vnode-types.png)
 
 我们注意到，这些枚举属性的值基本都是通过将十进制数字 `1` 左移不同的位数得来的。根据这些基本的枚举属性值，我们还可以派生出额外的三个标识：
 
 ```js
 // html 和 svg 都是标签元素，可以用 ELEMENT 表示
-VNodeFlags.ELEMENT = VNodeFlags.ELEMENT_HTML | VNodeFlags.ELEMENT_SVG
+VNodeFlags.ELEMENT = VNodeFlags.ELEMENT_HTML | VNodeFlags.ELEMENT_SVG;
 // 普通有状态组件、需要被keepAlive的有状态组件、已经被keepAlice的有状态组件 都是“有状态组件”，统一用 COMPONENT_STATEFUL 表示
 VNodeFlags.COMPONENT_STATEFUL =
-  VNodeFlags.COMPONENT_STATEFUL_NORMAL |
-  VNodeFlags.COMPONENT_STATEFUL_SHOULD_KEEP_ALIVE |
-  VNodeFlags.COMPONENT_STATEFUL_KEPT_ALIVE
+    VNodeFlags.COMPONENT_STATEFUL_NORMAL | VNodeFlags.COMPONENT_STATEFUL_SHOULD_KEEP_ALIVE | VNodeFlags.COMPONENT_STATEFUL_KEPT_ALIVE;
 // 有状态组件 和  函数式组件都是“组件”，用 COMPONENT 表示
-VNodeFlags.COMPONENT = VNodeFlags.COMPONENT_STATEFUL | VNodeFlags.COMPONENT_FUNCTIONAL
+VNodeFlags.COMPONENT = VNodeFlags.COMPONENT_STATEFUL | VNodeFlags.COMPONENT_FUNCTIONAL;
 ```
 
 其中 `VNodeFlags.ELEMENT`、`VNodeFlags.COMPONENT_STATEFUL` 以及 `VNodeFlags.COMPONENT` 是由基本标识通过`按位或(|)`运算得到的，这三个派生值将用于辅助判断。
@@ -344,52 +342,52 @@ VNodeFlags.COMPONENT = VNodeFlags.COMPONENT_STATEFUL | VNodeFlags.COMPONENT_FUNC
 ```js
 // html 元素节点
 const htmlVnode = {
-  flags: VNodeFlags.ELEMENT_HTML,
-  tag: 'div',
-  data: null
-}
+    flags: VNodeFlags.ELEMENT_HTML,
+    tag: 'div',
+    data: null,
+};
 
 // svg 元素节点
 const svgVnode = {
-  flags: VNodeFlags.ELEMENT_SVG,
-  tag: 'svg',
-  data: null
-}
+    flags: VNodeFlags.ELEMENT_SVG,
+    tag: 'svg',
+    data: null,
+};
 
 // 函数式组件
 const functionalComponentVnode = {
-  flags: VNodeFlags.COMPONENT_FUNCTIONAL,
-  tag: MyFunctionalComponent
-}
+    flags: VNodeFlags.COMPONENT_FUNCTIONAL,
+    tag: MyFunctionalComponent,
+};
 
 // 普通的有状态组件
 const normalComponentVnode = {
-  flags: VNodeFlags.COMPONENT_STATEFUL_NORMAL,
-  tag: MyStatefulComponent
-}
+    flags: VNodeFlags.COMPONENT_STATEFUL_NORMAL,
+    tag: MyStatefulComponent,
+};
 
 // Fragment
 const fragmentVnode = {
-  flags: VNodeFlags.FRAGMENT,
-  // 注意，由于 flags 的存在，我们已经不需要使用 tag 属性来存储唯一标识
-  tag: null
-}
+    flags: VNodeFlags.FRAGMENT,
+    // 注意，由于 flags 的存在，我们已经不需要使用 tag 属性来存储唯一标识
+    tag: null,
+};
 
 // Portal
 const portalVnode = {
-  flags: VNodeFlags.PORTAL,
-  // 注意，由于 flags 的存在，我们已经不需要使用 tag 属性来存储唯一标识，tag 属性用来存储 Portal 的 target
-  tag: target
-}
+    flags: VNodeFlags.PORTAL,
+    // 注意，由于 flags 的存在，我们已经不需要使用 tag 属性来存储唯一标识，tag 属性用来存储 Portal 的 target
+    tag: target,
+};
 ```
 
 如下是利用 `VNodeFlags` 判断 `VNode` 类型的例子，比如判断一个 `VNode` 是否是组件：
 
 ```js
 // 使用按位与(&)运算
-functionalComponentVnode.flags & VNodeFlags.COMPONENT // 真
-normalComponentVnode.flags & VNodeFlags.COMPONENT // 真
-htmlVnode.flags & VNodeFlags.COMPONENT // 假
+functionalComponentVnode.flags & VNodeFlags.COMPONENT; // 真
+normalComponentVnode.flags & VNodeFlags.COMPONENT; // 真
+htmlVnode.flags & VNodeFlags.COMPONENT; // 假
 ```
 
 熟悉位运算的话，理解起来很简单。这实际上是多种位运算技巧中的一个小技巧。我们可以列一个表格：
@@ -422,41 +420,41 @@ DOM 是一棵树早已家至人说，既然 `VNode` 是真实渲染内容的描�
 
 总的来说无非有以下几种：
 
-- 没有子节点
-- 只有一个子节点
-- 多个子节点
-  - 有 `key`
-  - 无 `key`
-- 不知道子节点的情况
+-   没有子节点
+-   只有一个子节点
+-   多个子节点
+    -   有 `key`
+    -   无 `key`
+-   不知道子节点的情况
 
 我们可以用一个叫做 `ChildrenFlags` 的对象来枚举出以上这些情况，作为一个 `VNode` 的子节点的类型标识：
 
 ```js
 const ChildrenFlags = {
-  // 未知的 children 类型
-  UNKNOWN_CHILDREN: 0,
-  // 没有 children
-  NO_CHILDREN: 1,
-  // children 是单个 VNode
-  SINGLE_VNODE: 1 << 1,
+    // 未知的 children 类型
+    UNKNOWN_CHILDREN: 0,
+    // 没有 children
+    NO_CHILDREN: 1,
+    // children 是单个 VNode
+    SINGLE_VNODE: 1 << 1,
 
-  // children 是多个拥有 key 的 VNode
-  KEYED_VNODES: 1 << 2,
-  // children 是多个没有 key 的 VNode
-  NONE_KEYED_VNODES: 1 << 3
-}
+    // children 是多个拥有 key 的 VNode
+    KEYED_VNODES: 1 << 2,
+    // children 是多个没有 key 的 VNode
+    NONE_KEYED_VNODES: 1 << 3,
+};
 ```
 
 由于 `ChildrenFlags.KEYED_VNODES` 和 `ChildrenFlags.NONE_KEYED_VNODES` 都属于多个 `VNode`，所以我们可以派生出一个“多节点”标识，以方便程序的判断：
 
 ```js
-ChildrenFlags.MULTIPLE_VNODES = ChildrenFlags.KEYED_VNODES | ChildrenFlags.NONE_KEYED_VNODES
+ChildrenFlags.MULTIPLE_VNODES = ChildrenFlags.KEYED_VNODES | ChildrenFlags.NONE_KEYED_VNODES;
 ```
 
 这样我们判断一个 `VNode` 的子节点是否是多个子节点就变得容易多了：
 
 ```js
-someVNode.childFlags & ChildrenFlags.MULTIPLE_VNODES
+someVNode.childFlags & ChildrenFlags.MULTIPLE_VNODES;
 ```
 
 :::tip
@@ -468,52 +466,52 @@ someVNode.childFlags & ChildrenFlags.MULTIPLE_VNODES
 ```js
 // 没有子节点的 div 标签
 const elementVNode = {
-  flags: VNodeFlags.ELEMENT_HTML,
-  tag: 'div',
-  data: null,
-  children: null,
-  childFlags: ChildrenFlags.NO_CHILDREN
-}
+    flags: VNodeFlags.ELEMENT_HTML,
+    tag: 'div',
+    data: null,
+    children: null,
+    childFlags: ChildrenFlags.NO_CHILDREN,
+};
 
 // 文本节点的 childFlags 始终都是 NO_CHILDREN
 const textVNode = {
-  tag: null,
-  data: null,
-  children: '我是文本',
-  childFlags: ChildrenFlags.NO_CHILDREN
-}
+    tag: null,
+    data: null,
+    children: '我是文本',
+    childFlags: ChildrenFlags.NO_CHILDREN,
+};
 
 // 拥有多个使用了key的 li 标签作为子节点的 ul 标签
 const elementVNode = {
-  flags: VNodeFlags.ELEMENT_HTML,
-  tag: 'ul',
-  data: null,
-  childFlags: ChildrenFlags.KEYED_VNODES,
-  children: [
-    {
-      tag: 'li',
-      data: null,
-      key: 0
-    },
-    {
-      tag: 'li',
-      data: null,
-      key: 1
-    }
-  ]
-}
+    flags: VNodeFlags.ELEMENT_HTML,
+    tag: 'ul',
+    data: null,
+    childFlags: ChildrenFlags.KEYED_VNODES,
+    children: [
+        {
+            tag: 'li',
+            data: null,
+            key: 0,
+        },
+        {
+            tag: 'li',
+            data: null,
+            key: 1,
+        },
+    ],
+};
 
 // 只有一个子节点的 Fragment
 const elementVNode = {
-  flags: VNodeFlags.FRAGMENT,
-  tag: null,
-  data: null,
-  childFlags: ChildrenFlags.SINGLE_VNODE,
-  children: {
-    tag: 'p',
-    data: null
-  }
-}
+    flags: VNodeFlags.FRAGMENT,
+    tag: null,
+    data: null,
+    childFlags: ChildrenFlags.SINGLE_VNODE,
+    children: {
+        tag: 'p',
+        data: null,
+    },
+};
 ```
 
 但并非所有类型的 `VNode` 的 `children` 属性都是用来存储子 `VNode`，比如组件的“子 `VNode`”其实不应该作为 `children` 而是应该作为 `slots`，所以我们会定义 `VNode.slots` 属性来存储这些子 `VNode`，不过目前来说我们还不需要深入探讨有关插槽的知识。

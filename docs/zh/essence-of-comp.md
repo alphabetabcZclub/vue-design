@@ -11,12 +11,12 @@
 我们可以使用 `lodash.template` 函数来回忆一下当年是如何用模板开发一个页面的：
 
 ```js
-import { template } from 'lodash'
+import { template } from 'lodash';
 
-const compiler = template('<h1><%= title %></h1>')
-const html = compiler({ title: 'My Component' })
+const compiler = template('<h1><%= title %></h1>');
+const html = compiler({ title: 'My Component' });
 
-document.getElementById('app').innerHTML = html
+document.getElementById('app').innerHTML = html;
 ```
 
 模板引擎的概念是：`字符串 + 数据 => html`。
@@ -28,23 +28,23 @@ document.getElementById('app').innerHTML = html
 当数据发生变化时，我们需要使用新的数据重新编译模板：
 
 ```js
-const newHtml = compiler({ title: 'New Component' })
+const newHtml = compiler({ title: 'New Component' });
 ```
 
 如果把上面的逻辑封装成一个函数，那么一个组件就诞生了：
 
 ```js
-const MyComponent = props => {
-  const compiler = MyComponent.cache || (MyComponent.cache = template('<h1><%= title %></h1>'))
-  return compiler(props)
-}
-MyComponent.cache = null
+const MyComponent = (props) => {
+    const compiler = MyComponent.cache || (MyComponent.cache = template('<h1><%= title %></h1>'));
+    return compiler(props);
+};
+MyComponent.cache = null;
 ```
 
 我们可以这样使用它：
 
 ```js
-document.getElementById('app').innerHTML = MyComponent({ title: 'MyComponent' })
+document.getElementById('app').innerHTML = MyComponent({ title: 'MyComponent' });
 ```
 
 :::tip
@@ -57,47 +57,47 @@ document.getElementById('app').innerHTML = MyComponent({ title: 'MyComponent' })
 
 组件的本质虽然没变，但组件的产出却改变了。在模板引擎的年代，组件的产出是 `html` 字符串：
 
-![template](@imgs/template.png)
+![template](../.vitepress/assets/imgs/template.png)
 
 而如今的 `Vue` 或 `React`，它们的组件所产出的内容并不是 `html` 字符串，而是大家所熟知的 `Virtual DOM`。
 
-![virtual-dom](@imgs/virtual-dom.png)
+![virtual-dom](../.vitepress/assets/imgs/virtual-dom.png)
 
 拿 `Vue` 来说，一个组件最核心的东西是 `render` 函数，剩余的其他内容，如 `data`、`compouted`、`props` 等都是为 `render` 函数提供数据来源服务的。`render` 函数本可以直接产出 `html` 字符串，但却产出了 `Virtual DOM`，借助 `snabbdom` 的 API 我们可以很容易地用代码描述这个公式：
 
 ```js
-import { h } from 'snabbdom'
+import { h } from 'snabbdom';
 
 // h 函数用来创建 VNode，组件的产出是 VNode
-const MyComponent = props => {
-  return h('h1', props.title)
-}
+const MyComponent = (props) => {
+    return h('h1', props.title);
+};
 ```
 
 `Virtual DOM` 终究要渲染真实 DOM，这个过程就可以理解为模板引擎年代的完全替换 `html`，只不过它采用的不是完全替换，我们通常把这个过程叫做 `patch`，同样可以借助 `snabbdom` 的 API 轻松地实现：
 
 ```js
-import { h, init } from 'snabbdom'
+import { h, init } from 'snabbdom';
 // init 方法用来创建 patch 函数
-const patch = init([])
+const patch = init([]);
 
-const MyComponent = props => {
-  return h('h1', props.title)
-}
+const MyComponent = (props) => {
+    return h('h1', props.title);
+};
 
 // 组件的产出是 VNode
-const prevVnode = MyComponent({ title: 'prev' })
+const prevVnode = MyComponent({ title: 'prev' });
 // 将 VNode 渲染成真实 DOM
-patch(document.getElementById('app'), prevVnode)
+patch(document.getElementById('app'), prevVnode);
 ```
 
 当数据变更时，组件会产出新的 `VNode`，我们只需再次调用 `patch` 函数即可：
 
 ```js
 // 数据变更，产出新的 VNode
-const nextVnode = MyComponent({ title: 'next' })
+const nextVnode = MyComponent({ title: 'next' });
 // 通过对比新旧 VNode，高效地渲染真实 DOM
-patch(prevVnode, nextVnode)
+patch(prevVnode, nextVnode);
 ```
 
 :::tip
@@ -120,8 +120,8 @@ patch(prevVnode, nextVnode)
 
 ```js
 const elementVnode = {
-  tag: 'div'
-}
+    tag: 'div',
+};
 ```
 
 想要把 `elementVnode` 渲染成真实 DOM，我们还需要一个渲染器(`Renderer`)：
@@ -136,21 +136,21 @@ function render(vnode, container) {}
 
 ```js
 // 把 elementVnode 渲染到 id 为 app 的元素下
-render(elementVnode, document.getElementById('app'))
+render(elementVnode, document.getElementById('app'));
 ```
 
 `render` 函数的实现也很简单：
 
 ```js
 function render(vnode, container) {
-  mountElement(vnode, container)
+    mountElement(vnode, container);
 }
 
 function mountElement(vnode, container) {
-  // 创建元素
-  const el = document.createElement(vnode.tag)
-  // 将元素添加到容器
-  container.appendChild(el)
+    // 创建元素
+    const el = document.createElement(vnode.tag);
+    // 将元素添加到容器
+    container.appendChild(el);
 }
 ```
 
@@ -164,12 +164,12 @@ function mountElement(vnode, container) {
 
 ```js
 class MyComponent {
-  render() {
-    // render 函数产出 VNode
-    return {
-      tag: 'div'
+    render() {
+        // render 函数产出 VNode
+        return {
+            tag: 'div',
+        };
     }
-  }
 }
 ```
 
@@ -177,21 +177,21 @@ class MyComponent {
 
 ```js
 const componentVnode = {
-  tag: MyComponent
-}
+    tag: MyComponent,
+};
 ```
 
 如上，直接将 `tag` 属性的值指向组件自身。但想要正确地渲染该组件，我们还需要修改 `render`：
 
 ```js
 function render(vnode, container) {
-  if (typeof vnode.tag === 'string') {
-    // html 标签
-    mountElement(vnode, container)
-  } else {
-    // 组件
-    mountComponent(vnode, container)
-  }
+    if (typeof vnode.tag === 'string') {
+        // html 标签
+        mountElement(vnode, container);
+    } else {
+        // 组件
+        mountComponent(vnode, container);
+    }
 }
 ```
 
@@ -199,12 +199,12 @@ function render(vnode, container) {
 
 ```js
 function mountComponent(vnode, container) {
-  // 创建组件实例
-  const instance = new vnode.tag()
-  // 渲染
-  instance.$vnode = instance.render()
-  // 挂载
-  mountElement(instance.$vnode, container)
+    // 创建组件实例
+    const instance = new vnode.tag();
+    // 渲染
+    instance.$vnode = instance.render();
+    // 挂载
+    mountElement(instance.$vnode, container);
 }
 ```
 
@@ -236,15 +236,15 @@ class MyComponent {}
 
 它们的区别如下：
 
-- 函数式组件：
+-   函数式组件：
 
-  - 是一个纯函数
-  - 没有自身状态，只接收外部数据
-  - 产出 `VNode` 的方式：单纯的函数调用
+    -   是一个纯函数
+    -   没有自身状态，只接收外部数据
+    -   产出 `VNode` 的方式：单纯的函数调用
 
-- 有状态组件：
-  - 是一个类，可实例化
-  - 可以有自身状态
-  - 产出 `VNode` 的方式：需要实例化，然后调用其 `render` 函数
+-   有状态组件：
+    -   是一个类，可实例化
+    -   可以有自身状态
+    -   产出 `VNode` 的方式：需要实例化，然后调用其 `render` 函数
 
 在后续渲染器的相关章节中，会再次讲述 **有状态组件** 与 **函数式组件** 的原理和异同，那时你的理解会更加深刻。
